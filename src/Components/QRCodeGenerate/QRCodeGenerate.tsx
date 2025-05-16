@@ -1,19 +1,19 @@
 import { useState, useRef } from "react";
-import QRCode from "react-qr-code";
 import { Button } from "../Button/Button";
 import { Header } from "../Header/Header";
 import { Input } from "../Input/Input";
 import * as htmlToImage from "html-to-image";
+import { QRCode } from "react-qrcode-logo";
+import { UploadFile } from "../UploadFile/UploadFile";
 export function QRCodeGenerate(){
   const [url, setUrl] = useState('')
   const [qrvisible, setqrVisible] = useState(false)
-  const qrRef = useRef<HTMLElement | null>(null)
+  const qrRef = useRef<HTMLDivElement | null>(null)
   const handleQrGenerate = () =>{
     if(!url){
       return;
     }
     setqrVisible(true)
-    
   };
 
 
@@ -33,6 +33,13 @@ export function QRCodeGenerate(){
       
     }
   };
+  const [file, setFile] = useState<String | null>(null);
+     const handleFileChange = (e:React.ChangeEvent<HTMLInputElement>) =>{
+        if(e.target.files){
+            const url =  URL.createObjectURL(e.target.files[0])
+            setFile(url)
+        }
+    }
   
   return (
     <>
@@ -44,10 +51,11 @@ export function QRCodeGenerate(){
           </div>
       {qrvisible && (
           <div  className="qrcode__download">
-            <div className="qrcode__image">
-              <QRCode ref={qrRef} value={url} size={300} />
-              <Button text='Download' handleQrGenerate={downloadQRCode}/>
+            <div className="qrcode__image" ref={qrRef}>
+              <QRCode  value={url} size={300} level="H" icon="./vite.svg" logoImage={file} ecLevel={'H'} logoWidth={90}/>
             </div>
+              <UploadFile handleFileChange={handleFileChange}/>
+              <Button text='Download' handleQrGenerate={downloadQRCode}/>
           </div>
         )}
         </div>
